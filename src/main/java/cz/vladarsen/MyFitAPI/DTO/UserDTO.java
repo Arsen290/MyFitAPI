@@ -1,9 +1,7 @@
 package cz.vladarsen.MyFitAPI.DTO;
 
-import cz.vladarsen.MyFitAPI.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
