@@ -1,0 +1,102 @@
+package cz.vladarsen.MyFitAPI.service.impl;
+
+import cz.vladarsen.MyFitAPI.DTO.UserDTO;
+import cz.vladarsen.MyFitAPI.entity.Role;
+import cz.vladarsen.MyFitAPI.entity.RoleName;
+import cz.vladarsen.MyFitAPI.entity.User;
+import cz.vladarsen.MyFitAPI.repository.RoleRepository;
+import cz.vladarsen.MyFitAPI.repository.UserRepository;
+import cz.vladarsen.MyFitAPI.service.UserService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
+
+@Service
+@Slf4j
+@RequiredArgsConstructor
+public class UserServiceImpl implements UserService {
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+
+    private List<Role> getRoleUser() {
+        Role userRole = roleRepository.findByRoleName(RoleName.USER)
+                .orElseThrow(() -> new RuntimeException("Role not found"));
+
+        return Collections.singletonList(userRole);
+    }
+
+    @Override
+    public UserDTO registerUser(UserDTO userDTO) {
+        // Check,validation and others
+
+        List<Role> roleUser = getRoleUser();
+
+        User newUser = new User();
+        newUser.setUsername(userDTO.getUsername());
+        newUser.setPassword(userDTO.getPassword());//newUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        newUser.setEmail(userDTO.getEmail());
+        newUser.setFirstName(userDTO.getFirstName());
+        newUser.setLastName(userDTO.getLastName());
+        newUser.setRoles(roleUser);
+        newUser = userRepository.save(newUser);
+        log.info("IN register - user: {} with role : {} successfully registered", newUser,roleUser);
+
+        return userDTO;
+    }
+    //Change logic
+    @Override
+    public UserDTO updateUser(Long userId, UserDTO userDTO){
+        List<Role> roleUser = getRoleUser();
+
+        User existingUser = userRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        existingUser.setEmail(userDTO.getEmail());
+        existingUser.setPassword(userDTO.getPassword());//existingUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        existingUser.setFirstName(userDTO.getFirstName());
+        existingUser.setLastName(userDTO.getLastName());
+        existingUser.setRoles(roleUser);
+        existingUser = userRepository.save(existingUser);
+        return new UserDTO(existingUser.getUsername(), existingUser.getPassword(), existingUser.getEmail(), existingUser.getFirstName(), existingUser.getLastName());
+    };
+    @Override
+    public void deleteUser(Long userId){
+        userRepository.deleteById(userId);
+    };
+    public String loginUser(UserDTO userDTO){
+        // Checks, validation, etc...
+
+        // User authentication, token generation and return
+        // Implementation of the loginUser method remains in your authentication system
+    return "token";
+    };
+
+    @Override
+    public List<User> getAll() {
+        List<User> result = userRepository.findAll();
+        log.info("IN getAll - {} users found", result.size());
+        return result;
+    }
+    @Override
+    public User findByUsername(String username){
+        Optional<User> userOptional = userRepository.findByUsername(username);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            return user;
+        } else {
+            throw new UsernameNotFoundException("User not found");
+        }
+    };
+
+
+
+}
