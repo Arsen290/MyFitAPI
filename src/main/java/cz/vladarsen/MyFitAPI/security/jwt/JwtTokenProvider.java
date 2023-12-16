@@ -4,6 +4,7 @@ import cz.vladarsen.MyFitAPI.entity.Role;
 import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -23,7 +24,13 @@ public class JwtTokenProvider {
         return false;
     }
 
-    private List<Role> getRoles(String token) {
-        return null;
+    private List<String> getRoles(List<Role> userRoles) {
+        List<String> result = new ArrayList<>();
+
+        userRoles.forEach(role -> {
+            result.add(role.getRoleName().name());
+        });
+
+        return result;
     }
 }
