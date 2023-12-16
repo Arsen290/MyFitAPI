@@ -9,7 +9,9 @@ import cz.vladarsen.MyFitAPI.repository.UserRepository;
 import cz.vladarsen.MyFitAPI.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -19,11 +21,17 @@ import java.util.Optional;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder){
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
     private List<Role> getRoleUser() {
         Role userRole = roleRepository.findByRoleName(RoleName.USER)
                 .orElseThrow(() -> new RuntimeException("Role not found"));
@@ -39,13 +47,13 @@ public class UserServiceImpl implements UserService {
 
         User newUser = new User();
         newUser.setUsername(userDTO.getUsername());
-        newUser.setPassword(userDTO.getPassword());//newUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        newUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         newUser.setEmail(userDTO.getEmail());
         newUser.setFirstName(userDTO.getFirstName());
         newUser.setLastName(userDTO.getLastName());
         newUser.setRoles(roleUser);
         newUser = userRepository.save(newUser);
-        log.info("IN register - user: {} with role : {} successfully registered", newUser,roleUser);
+        log.info("IN register - user: {} with role : {} successfully registered", newUser);
 
         return userDTO;
     }
@@ -68,6 +76,7 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(Long userId){
         userRepository.deleteById(userId);
     };
+    @Override
     public String loginUser(UserDTO userDTO){
         // Checks, validation, etc...
 
@@ -88,6 +97,7 @@ public class UserServiceImpl implements UserService {
 
         if (userOptional.isPresent()) {
             User user = userOptional.get();
+            log.info("IN findByUsername - user: {} found by username: {}", user, username);
             return user;
         } else {
             throw new UsernameNotFoundException("User not found");
