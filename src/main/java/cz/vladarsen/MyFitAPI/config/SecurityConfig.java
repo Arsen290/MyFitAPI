@@ -1,6 +1,5 @@
 package cz.vladarsen.MyFitAPI.config;
 
-import cz.vladarsen.MyFitAPI.security.jwt.JwtConfigurer;
 import cz.vladarsen.MyFitAPI.security.jwt.JwtTokenFilter;
 import cz.vladarsen.MyFitAPI.security.jwt.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
