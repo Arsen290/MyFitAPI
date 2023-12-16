@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
         newUser.setLastName(userDTO.getLastName());
         newUser.setRoles(roleUser);
         newUser = userRepository.save(newUser);
-        log.info("IN register - user: {} with role : {} successfully registered", newUser);
+        log.info("IN register - user: {} with role : {} successfully registered", newUser, roleUser);
 
         return userDTO;
     }
@@ -76,14 +76,6 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(Long userId){
         userRepository.deleteById(userId);
     };
-    @Override
-    public String loginUser(UserDTO userDTO){
-        // Checks, validation, etc...
-
-        // User authentication, token generation and return
-        // Implementation of the loginUser method remains in your authentication system
-    return "token";
-    };
 
     @Override
     public List<User> getAll() {
@@ -92,17 +84,11 @@ public class UserServiceImpl implements UserService {
         return result;
     }
     @Override
-    public User findByUsername(String username){
-        Optional<User> userOptional = userRepository.findByUsername(username);
-
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            log.info("IN findByUsername - user: {} found by username: {}", user, username);
-            return user;
-        } else {
-            throw new UsernameNotFoundException("User not found");
-        }
-    };
+    public User findByUsername(String username) {
+        User result = userRepository.findByUsername(username);
+        log.info("IN findByUsername - user: {} found by username: {}", result, username);
+        return result;
+    }
 
 
 

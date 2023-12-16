@@ -16,8 +16,8 @@ public class BaseEntity {
 
     @CreatedDate
     @Column(name="created")
-    private Date createdAt;
+    private Date created;
     @LastModifiedDate
     @Column(name="updated")
-    private Date updatedAt;
+    private Date updated;
 }

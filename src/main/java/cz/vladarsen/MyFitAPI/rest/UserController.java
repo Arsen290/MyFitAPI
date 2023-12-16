@@ -42,12 +42,6 @@ public class UserController {
         return ResponseEntity.ok("User deleted successfully");
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody UserDTO userDTO) {
-        String token = userService.loginUser(userDTO);
-        return ResponseEntity.ok(token);
-    }
-
     @GetMapping("/all")
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getAll();
