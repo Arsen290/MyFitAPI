@@ -25,11 +25,11 @@ import java.util.Optional;
 public class UserController {
     private final UserService userService;
 
-    @PostMapping("/register")
-    public ResponseEntity<UserDTO> registerUser(@RequestBody UserDTO userDTO) {
-        UserDTO registeredUser = userService.registerUser(userDTO);
-        return ResponseEntity.ok(registeredUser);
-    }
+//    @PostMapping("/register")
+//    public ResponseEntity<UserDTO> registerUser(@RequestBody UserDTO userDTO) {
+//        UserDTO registeredUser = userService.registerUser(userDTO);
+//        return ResponseEntity.ok(registeredUser);
+//    }
 
     @PutMapping("/update/{userId}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable Long userId, @RequestBody UserDTO userDTO) {
