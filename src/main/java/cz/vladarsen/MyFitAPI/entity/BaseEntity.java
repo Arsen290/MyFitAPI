@@ -1,16 +1,19 @@
 package cz.vladarsen.MyFitAPI.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.security.core.GrantedAuthority;
 
-import java.util.Collection;
 import java.util.Date;
 
-@MappedSuperclass
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
 public class BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,6 +22,7 @@ public class BaseEntity {
     @CreatedDate
     @Column(name="created")
     private Date created;
+
     @LastModifiedDate
     @Column(name="updated")
     private Date updated;

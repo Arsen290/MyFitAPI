@@ -1,11 +1,15 @@
-package cz.vladarsen.MyFitAPI.DTO;
+package cz.vladarsen.MyFitAPI.request;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @AllArgsConstructor
-public class UserDTO {
+@NoArgsConstructor
+public class RegisterRequest {
     private String username;
     private String password;
     private String email;

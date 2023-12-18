@@ -59,6 +59,7 @@ public class User extends BaseEntity implements UserDetails {
                 .collect(Collectors.toList());
     }
 
+
     @Override
     public String getPassword() {
         return password;
