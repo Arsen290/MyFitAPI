@@ -32,7 +32,7 @@ public class AuthenticationRestController {
     }
 
     @PostMapping("/authentication")
-    public ResponseEntity<String> authenticate(@RequestBody AuthenticationRequest authenticationRequestDTO) {
+    public ResponseEntity<String> authenticate(@RequestBody AuthenticationRequest authenticationRequest) {
 
     }
 

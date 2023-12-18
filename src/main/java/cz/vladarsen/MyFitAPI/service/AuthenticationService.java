@@ -6,9 +6,12 @@ import cz.vladarsen.MyFitAPI.entity.RoleName;
 import cz.vladarsen.MyFitAPI.entity.User;
 import cz.vladarsen.MyFitAPI.repository.RoleRepository;
 import cz.vladarsen.MyFitAPI.repository.UserRepository;
+import cz.vladarsen.MyFitAPI.request.AuthenticationRequest;
 import cz.vladarsen.MyFitAPI.request.RegisterRequest;
 import cz.vladarsen.MyFitAPI.response.AuthenticationResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +28,7 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
 
     private List<Role> getRoleUser() {
         Role userRole = roleRepository.findByRoleName(RoleName.USER)
@@ -58,7 +62,19 @@ public class AuthenticationService {
 
     }
 
-    public AuthenticationResponse authenticate(AuthenticationResponse request) {
-        return null;
+    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                request.getUsername(),
+                request.getPassword()
+        )
+        );
+        var user = repository.findByUsername(request.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        var JwtToken = jwtService.generateToken(user);
+        return AuthenticationResponse.builder()
+                .token(JwtToken)
+                .build();
+
     }
 }
