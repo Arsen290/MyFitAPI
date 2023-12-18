@@ -21,11 +21,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         String header = request.getHeader("Authorization");
         final String username;
+        final String token;
         if (header != null && header.startsWith("Bearer ")) {
-            String token = header.substring(7);
             request.setAttribute("token:", token);
             return;
         }
+        token = header.substring(7);
         filterChain.doFilter(request, response);
         username = jwtService.extractUsername(token);
     }
