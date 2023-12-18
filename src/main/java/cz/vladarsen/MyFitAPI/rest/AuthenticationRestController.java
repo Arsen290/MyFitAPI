@@ -2,13 +2,11 @@ package cz.vladarsen.MyFitAPI.rest;
 
 import cz.vladarsen.MyFitAPI.request.AuthenticationRequest;
 import cz.vladarsen.MyFitAPI.request.RegisterRequest;
-import cz.vladarsen.MyFitAPI.security.jwt.JwtTokenProvider;
+import cz.vladarsen.MyFitAPI.response.AuthenticationResponse;
+import cz.vladarsen.MyFitAPI.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,21 +17,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthenticationRestController {
-    private AuthenticationManager authenticationManager;
 
-    @Autowired
-    public AuthenticationRestController( AuthenticationManager authenticationManager)
-
-    }
+    private final AuthenticationService service;
 
     @PostMapping("/register")
-    public ResponseEntity<RegisterRequest> register(@RequestBody RegisterRequest registerRequest) {
-
+    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest registerRequest) {
+        return ResponseEntity.ok(service.register(registerRequest));
     }
 
     @PostMapping("/authentication")
-    public ResponseEntity<String> authenticate(@RequestBody AuthenticationRequest authenticationRequest) {
-
+    public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest authenticationRequest) {
+        return ResponseEntity.ok(service.authenticate(authenticationRequest));
     }
 
 }
