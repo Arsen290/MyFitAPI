@@ -14,7 +14,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.ZoneId;
+import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,6 +48,9 @@ public class UserServiceImpl implements UserService {
 
         List<Role> roleUser = getRoleUser();
 
+        LocalDateTime localDateTime = LocalDateTime.now();
+        Date currentDate = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+
         User newUser = new User();
         newUser.setUsername(userDTO.getUsername());
         newUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
@@ -52,6 +58,8 @@ public class UserServiceImpl implements UserService {
         newUser.setFirstName(userDTO.getFirstName());
         newUser.setLastName(userDTO.getLastName());
         newUser.setRoles(roleUser);
+        newUser.setCreated(currentDate);
+        newUser.setUpdated(currentDate);
         newUser = userRepository.save(newUser);
         log.info("IN register - user: {} with role : {} successfully registered", newUser, roleUser);
 
@@ -62,6 +70,10 @@ public class UserServiceImpl implements UserService {
     public UserDTO updateUser(Long userId, UserDTO userDTO){
         List<Role> roleUser = getRoleUser();
 
+        LocalDateTime localDateTime = LocalDateTime.now();
+        Date currentDate = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+
+
         User existingUser = userRepository.findById(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         existingUser.setEmail(userDTO.getEmail());
@@ -69,7 +81,10 @@ public class UserServiceImpl implements UserService {
         existingUser.setFirstName(userDTO.getFirstName());
         existingUser.setLastName(userDTO.getLastName());
         existingUser.setRoles(roleUser);
+        existingUser.setUpdated(currentDate);
+
         existingUser = userRepository.save(existingUser);
+
         return new UserDTO(existingUser.getUsername(), existingUser.getPassword(), existingUser.getEmail(), existingUser.getFirstName(), existingUser.getLastName());
     };
     @Override
@@ -84,9 +99,12 @@ public class UserServiceImpl implements UserService {
         return result;
     }
     @Override
-    public User findByUsername(String username) {
-        User result = userRepository.findByUsername(username);
-        log.info("IN findByUsername - user: {} found by username: {}", result, username);
+    public Optional<User> findByUsername(String username) {
+        log.info("Before findByUsername");
+        Optional<User> result = userRepository.findByUsername(username);
+        log.info("After findByUsername");
+        result.ifPresent(user -> log.info("IN findByUsername - user: {} found by username: {}", user, username));
+        log.info("result :{}", result);
         return result;
     }
 
