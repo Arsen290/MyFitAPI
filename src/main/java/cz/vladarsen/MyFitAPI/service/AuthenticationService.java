@@ -46,7 +46,7 @@ public class AuthenticationService {
                 .email(request.getEmail())
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
-                .roles(roleUser)
+                .role(roleUser)
                 .build();
         // Add date when add entity in db
         LocalDateTime localDateTime = LocalDateTime.now();

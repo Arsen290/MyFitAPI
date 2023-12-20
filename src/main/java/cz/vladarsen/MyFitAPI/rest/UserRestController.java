@@ -1,8 +1,12 @@
 package cz.vladarsen.MyFitAPI.rest;
 
+import cz.vladarsen.MyFitAPI.DTO.UserDTO;
+import cz.vladarsen.MyFitAPI.config.JwtService;
 import cz.vladarsen.MyFitAPI.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,33 +16,35 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserRestController {
 
     private final UserService userService;
+    private final JwtService jwtTokenUtil;
 
     // Endpoint to get the details of the currently authenticated user
     @GetMapping("/profile")
-    public ResponseEntity<UserDto> getUserProfile() {
-        UserDto userDto = userService.getCurrentUserProfile();
+    public ResponseEntity<UserDTO> getUserProfile(@RequestHeader("Authorization") String token) {
+        String username = jwtTokenUtil.extractUsername(token);
+        UserDTO userDto = userService.getCurrentUserProfile(username);
         return ResponseEntity.ok(userDto);
     }
 
     // Endpoint to update user details
-    @PutMapping("/update")
-    public ResponseEntity<UserDto> updateUserProfile(@RequestBody UpdateUserRequest updateUserRequest) {
-        UserDto updatedUser = userService.updateUserProfile(updateUserRequest);
-        return ResponseEntity.ok(updatedUser);
-    }
-
-    // Endpoint to change the user's password
-    @PostMapping("/change-password")
-    public ResponseEntity<Void> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) {
-        userService.changeUserPassword(changePasswordRequest);
-        return ResponseEntity.ok().build();
-    }
-
-    // Endpoint to delete the user's account
-    @DeleteMapping("/delete")
-    public ResponseEntity<Void> deleteUserAccount() {
-        userService.deleteUserAccount();
-        return ResponseEntity.ok().build();
-    }
+//    @PutMapping("/update")
+//    public ResponseEntity<UserDto> updateUserProfile(@RequestBody UpdateUserRequest updateUserRequest) {
+//        UserDto updatedUser = userService.updateUserProfile(updateUserRequest);
+//        return ResponseEntity.ok(updatedUser);
+//    }
+//
+//    // Endpoint to change the user's password
+//    @PostMapping("/change-password")
+//    public ResponseEntity<Void> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) {
+//        userService.changeUserPassword(changePasswordRequest);
+//        return ResponseEntity.ok().build();
+//    }
+//
+//    // Endpoint to delete the user's account
+//    @DeleteMapping("/delete")
+//    public ResponseEntity<Void> deleteUserAccount() {
+//        userService.deleteUserAccount();
+//        return ResponseEntity.ok().build();
+//    }
 
 }

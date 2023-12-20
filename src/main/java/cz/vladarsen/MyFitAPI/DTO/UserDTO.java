@@ -1,6 +1,7 @@
 package cz.vladarsen.MyFitAPI.DTO;
 
 import cz.vladarsen.MyFitAPI.entity.Role;
+import cz.vladarsen.MyFitAPI.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,4 +23,15 @@ public class UserDTO {
     private Date updated;
     private Date created;
 
+    public static UserDTO from(User user) {
+        return UserDTO.builder()
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .role(user.getRole())
+                .updated(user.getUpdated())
+                .created(user.getCreated())
+                .build();
+    }
 }
