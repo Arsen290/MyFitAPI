@@ -32,7 +32,7 @@
             </column>
         </createTable>
     </changeSet>
-
+    <!--    -->
     <changeSet id="1.0.1" author="vladarsen">
         <createTable tableName="roles">
             <column name="id" type="BIGINT" autoIncrement="true">
@@ -86,5 +86,37 @@
         <insert tableName="roles">
             <column name="name" value="ADMIN"/>
         </insert>
+    </changeSet>
+
+    <!-- Create the 'programs' table -->
+    <changeSet id="1.0.6" author="vladarsen">
+        <createTable tableName="programs">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="created" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1.0.7" author="vladarsen">
+        <!-- Add foreign key constraint to 'programs' referencing 'users' -->
+        <addForeignKeyConstraint baseTableName="programs"
+                                 baseColumnNames="user_id"
+                                 constraintName="fk_programs_users"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"/>
     </changeSet>
 </databaseChangeLog>

@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Builder
 @Table(name = "programs")
-
 public class Program extends BaseEntity{
 
     @Column(name = "program_name")
