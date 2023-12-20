@@ -48,7 +48,7 @@ public class AuthenticationService {
                 .lastName(request.getLastName())
                 .roles(roleUser)
                 .build();
-
+        // Add date when add entity in db
         LocalDateTime localDateTime = LocalDateTime.now();
         Date currentDate = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
         user.setCreated(currentDate);

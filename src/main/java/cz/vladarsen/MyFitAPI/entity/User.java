@@ -19,7 +19,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,7 +61,6 @@ public class User extends BaseEntity implements UserDetails {
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getRoleName().name()))
                 .collect(Collectors.toList());
     }
-
 
     @Override
     public String getPassword() {
