@@ -42,11 +42,12 @@ public class UserRestController {
 //        return ResponseEntity.ok().build();
 //    }
 //
-//    // Endpoint to delete the user's account
-//    @DeleteMapping("/delete")
-//    public ResponseEntity<Void> deleteUserAccount() {
-//        userService.deleteUserAccount();
-//        return ResponseEntity.ok().build();
-//    }
+    // Endpoint to delete the user's account
+    @DeleteMapping("/delete")
+    public ResponseEntity<Void> deleteUserAccount(Authentication authentication) {
+        String username = authentication.getName();
+        userService.deleteUserAccount(username);
+        return ResponseEntity.ok().build();
+    }
 
 }
