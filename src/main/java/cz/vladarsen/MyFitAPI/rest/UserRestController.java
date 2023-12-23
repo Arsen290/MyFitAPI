@@ -4,25 +4,27 @@ import cz.vladarsen.MyFitAPI.DTO.UserDTO;
 import cz.vladarsen.MyFitAPI.config.JwtService;
 import cz.vladarsen.MyFitAPI.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/user")
 @RequiredArgsConstructor
+@Slf4j
 public class UserRestController {
 
     private final UserService userService;
-    private final JwtService jwtTokenUtil;
 
     // Endpoint to get the details of the currently authenticated user
     @GetMapping("/profile")
-    public ResponseEntity<UserDTO> getUserProfile(@RequestHeader("Authorization") String token) {
-        String username = jwtTokenUtil.extractUsername(token);
+    @ResponseBody
+    public ResponseEntity<UserDTO> getUserProfile(Authentication authentication) {
+        String username = authentication.getName();
+        log.info("User {} is getting his profile", username);
         UserDTO userDto = userService.getCurrentUserProfile(username);
+        log.info("UserDTO contains: {}", userDto);
         return ResponseEntity.ok(userDto);
     }
 
