@@ -24,20 +24,21 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    //Get current user profile
     public UserDTO getCurrentUserProfile(String username){
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
 
         return UserDTO.from(user);
     }
-
+    //Delete user account
     public void deleteUserAccount(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
         userRepository.delete(user);
         log.info("IN delete - user with username: {} successfully deleted",username);
     }
-
+    //Update user profile
     public UserDTO updateUserProfile(String username, UpdateUserRequest updateUserRequest) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
@@ -51,7 +52,7 @@ public class UserService {
         if (updateUserRequest.getEmail() != null) {
             user.setEmail(updateUserRequest.getEmail());
         }
-
+        // Update date when updated entity in db
         LocalDateTime localDateTime = LocalDateTime.now();
         Date currentDate = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
         user.setUpdated(currentDate);
@@ -60,7 +61,7 @@ public class UserService {
         log.info("IN update - user with username: {} successfully updated at {}",username, currentDate);
         return UserDTO.from(user);
     }
-
+    //Change user password
     public void changeUserPassword(String username, ChangePasswordRequest changePasswordRequest) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
@@ -75,6 +76,7 @@ public class UserService {
         // Update the password
         user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
 
+        // Update date
         LocalDateTime localDateTime = LocalDateTime.now();
         Date currentDate = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
         user.setUpdated(currentDate);

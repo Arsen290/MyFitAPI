@@ -30,16 +30,19 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
+    //Get role user
     private List<Role> getRoleUser() {
         Role userRole = roleRepository.findByRoleName(RoleName.USER)
                 .orElseThrow(() -> new RuntimeException("Role not found"));
 
         return Collections.singletonList(userRole);
     }
+
+    //Register user
     public AuthenticationResponse register(RegisterRequest request) {
         List<Role> roleUser = getRoleUser();
 
-
+        // Build object user for register
         var user = User.builder()
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
@@ -53,7 +56,7 @@ public class AuthenticationService {
         Date currentDate = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
         user.setCreated(currentDate);
         user.setUpdated(currentDate);
-
+        // Save user in db
         repository.save(user);
         var JwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
@@ -62,7 +65,9 @@ public class AuthenticationService {
 
     }
 
+    //Authenticate user
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
+        // Check user
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 request.getUsername(),
                 request.getPassword()

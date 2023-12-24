@@ -38,6 +38,7 @@ public class UserRestController {
     ) {
         String username = authentication.getName();
         UserDTO updatedUser = userService.updateUserProfile(username, updateUserRequest);
+        log.info("User {} updated his profile {}", username,updatedUser);
         return ResponseEntity.ok(updatedUser);
     }
 
@@ -49,6 +50,7 @@ public class UserRestController {
         String username = authentication.getName();
 
         userService.changeUserPassword(username,changePasswordRequest);
+        log.info("User {} changed his password", username);
         return ResponseEntity.ok().build();
     }
 
