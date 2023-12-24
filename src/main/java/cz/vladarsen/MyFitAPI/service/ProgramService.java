@@ -45,5 +45,12 @@ public class ProgramService {
         return program;
     }
 
+    public void deleteProgram(Long programId) {
+        Program program = programRepository.findById(programId)
+                .orElseThrow(() -> new RuntimeException("Program not found"));
+        programRepository.delete(program);
+        log.info("IN deleteProgram - program {} successfully deleted.", program.getProgramName());
+    }
+
 
 }

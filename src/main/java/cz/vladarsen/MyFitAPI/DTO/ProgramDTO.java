@@ -13,13 +13,14 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 public class ProgramDTO {
-
+    private Long id;
     private String programName;
     private Date created;
 
 
     public static ProgramDTO from(Program program) {
         return ProgramDTO.builder()
+                .id(program.getId())
                 .programName(program.getProgramName())
                 .created(program.getCreated())
                 .build();

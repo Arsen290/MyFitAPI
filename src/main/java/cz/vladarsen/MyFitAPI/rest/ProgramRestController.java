@@ -41,4 +41,10 @@ public class ProgramRestController {
         log.info("IN createProgram - program for user with username: {} successfully converted to DTO. {}",username,programDTO);
         return ResponseEntity.ok(programDTO);
     }
+    @DeleteMapping("/delete_program/{programId}")
+    public ResponseEntity<Void> deleteProgram(@PathVariable Long programId) {
+        programService.deleteProgram(programId);
+        log.info("IN deleteProgram - program with id: {} successfully deleted.", programId);
+        return ResponseEntity.ok().build();
+    }
 }
