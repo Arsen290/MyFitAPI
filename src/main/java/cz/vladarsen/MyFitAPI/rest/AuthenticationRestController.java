@@ -30,6 +30,7 @@ public class AuthenticationRestController {
             errorMessage = "Invalid username or password";
         } else {
             errorMessage = "Authentication failed: " + e.getMessage();
+
         }
         return ResponseEntity.status(status).contentType(MediaType.APPLICATION_JSON).body(errorMessage);
     }

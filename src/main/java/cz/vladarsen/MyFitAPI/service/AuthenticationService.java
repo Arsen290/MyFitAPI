@@ -12,6 +12,7 @@ import cz.vladarsen.MyFitAPI.request.AuthenticationRequest;
 import cz.vladarsen.MyFitAPI.request.RegisterRequest;
 import cz.vladarsen.MyFitAPI.response.AuthenticationResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,6 +26,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthenticationService {
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
@@ -78,21 +80,25 @@ public class AuthenticationService {
 
     //Authenticate user
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        // Check user
 
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                request.getUsername(),
-                request.getPassword()
-        ));
+        try {
 
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                    request.getUsername(),
+                    request.getPassword()
+            ));
+
+        }catch (org.springframework.security.core.AuthenticationException e) {
+            throw new AuthenticationException("Invalid username or password", "INVALID_CREDENTIALS");
+        }
 
         var user = repository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                    .orElseThrow(() -> new RuntimeException("User not found"));
 
         var JwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
-                .token(JwtToken)
-                .build();
-
+            return AuthenticationResponse.builder()
+                    .token(JwtToken)
+                    .build();
+        }
     }
-}
+
