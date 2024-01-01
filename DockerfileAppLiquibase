@@ -1,0 +1,25 @@
+# Используем образ с Maven и OpenJDK 17 для сборки приложения
+FROM maven:3.8.4-openjdk-17 AS builder
+
+# Установка рабочей директории в /app
+WORKDIR /app
+
+# Копирование исходного кода
+COPY . .
+
+# Сборка приложения и выполнение Liquibase (пропуск тестов)
+RUN mvn clean install -DskipTests
+
+# Обновление Liquibase
+#RUN mvn liquibase:update
+
+# Создание минимального образа с JRE
+FROM openjdk:17-jdk
+
+WORKDIR /app
+
+# Копирование JAR-файла из предыдущего этапа
+COPY --from=builder /app/target/*.jar /app/app.jar
+
+# Запуск приложения при старте контейнера
+CMD ["java", "-jar", "app.jar"]
